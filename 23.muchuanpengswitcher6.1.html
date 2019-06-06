@@ -1,0 +1,87 @@
+    <meta charset="UTF-8">
+    <canvas id="c" width="40" height="20" on="#0654ba" off="lightgray" circle="white" status="on" onclick="doChange()"></canvas>      
+    <script>
+        //查询选择器
+        let c = document.querySelector("#c");
+        //获得绘制上下文
+        let ctx = c.getContext("2d");
+
+        const WIDTH = c.width;
+        const HEIGHT = c.height;
+        //圆1的坐标半径
+        let r1 = HEIGHT / 2;
+        let x1 = r1;
+        let y1 = HEIGHT / 2;
+        //圆2的坐标半径
+        let r2 = HEIGHT / 2;
+        let x2 = WIDTH - r2;
+        let y2 = HEIGHT / 2;
+        //左右移动圆的坐标半径
+        let y3 = HEIGHT / 2;
+        let r3 = HEIGHT / 2 - r1*0.05;
+        function doDrawing(statu,x3){
+        // 圆1
+        ctx.beginPath();
+        ctx.fillStyle = c.getAttribute(statu);
+        ctx.arc(x1, y1, r1, 0, Math.PI *2);
+        ctx.fill();
+
+
+        // 圆2
+        ctx.beginPath();
+        ctx.fillStyle = c.getAttribute(statu);
+        ctx.arc(x2, y2, r2, 0, Math.PI * 2);
+        ctx.fill();
+
+
+        //矩形
+        ctx.beginPath();
+        ctx.fillStyle = c.getAttribute(statu);
+        // ctx.fillRect(x1, 0, WIDTH/2, HEIGHT);
+        ctx.fillRect(x1, 0, WIDTH - 2 * r1, HEIGHT);
+
+
+        //左右移动的圆
+        ctx.beginPath();
+        ctx.fillStyle = c.getAttribute("circle");
+        ctx.arc(x3, y3, r3, 0, Math.PI * 2);
+        ctx.fillStyle="white";
+        ctx.fill();
+        };
+        
+        //页面加载默认开关打开
+        window.onload = function() {
+            doDrawing("on" , x2);
+        }
+    
+        //开关点击事件
+        function doChange(){
+            //判断此时开关是否是开启
+            if(c.getAttribute("status") == "on"){
+                c.setAttribute("status" , "off");
+
+                let x3_on = x2;
+            //计时器做动画 从开到关
+            let timer_on = setInterval(function() {
+            //判断动画停止时间 
+            if(x3_on == r1) {
+                clearInterval(timer_on);
+            }
+                doDrawing("off" , x3_on);
+                x3_on = x3_on - r1 / 8;
+                } , 10)      
+            } else {
+                c.setAttribute("status" , "on");
+                let x3_off = r1;
+                //计时器做动画 从关到开
+                let timer_off = setInterval(function() {
+                    //判断动画停止时间
+                    if(x3_off == x2) {
+                        clearInterval(timer_off);
+                    }
+                    doDrawing("on" , x3_off);
+                    x3_off = x3_off + r1 / 8;
+                } , 10);
+            }
+        }
+    </script> 
